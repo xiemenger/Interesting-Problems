@@ -1,0 +1,17 @@
+Suppose we want to design a system for storing employee records keyed using phone numbers. And we want following queries to be performed efficiently:
+
+Insert a phone number and corresponding information.
+Search a phone number and fetch the information.
+Delete a phone number and related information.
+We can think of using the following data structures to maintain information about different phone numbers.
+
+Array of phone numbers and records.
+Linked List of phone numbers and records.
+Balanced binary search tree with phone numbers as keys.
+Direct Access Table.
+For arrays and linked lists, we need to search in a linear fashion, which can be costly in practice. If we use arrays and keep the data sorted, then a phone number can be searched in O(Logn) time using Binary Search, but insert and delete operations become costly as we have to maintain sorted order.
+
+With balanced binary search tree, we get moderate search, insert and delete times. All of these operations can be guaranteed to be in O(Logn) time.
+
+Another solution that one can think of is to use a direct access table where we make a big array and use phone numbers as index in the array. An entry in array is NIL if phone number is not present, else the array entry stores pointer to records corresponding to phone number. Time complexity wise this solution is the best among all, we can do all operations in O(1) time. For example to insert a phone number, we create a record with details of given phone number, use phone number as index and store the pointer to the created record in table.
+This solution has many practical limitations. First problem with this solution is extra space required is huge. For example if phone number is n digits, we need O(m * 10n) space for table where m is size of a pointer to record. Another problem is an integer in a programming language may not store n digits.
