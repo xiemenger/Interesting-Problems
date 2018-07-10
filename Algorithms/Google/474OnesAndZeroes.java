@@ -1,3 +1,10 @@
+/**
+ * It's a two-demention backpack problems.
+ * dp[i][j] means for the max num of strings to fix in i zeros and j ones.
+ * for example: for string 10, we have 1 '1', 1 '0'.
+ * we need to update dp[1][1] and any dp[i][j] where m > i > 1 and n> j > 1 .
+ * Since it might fix into dp[i][j] too.
+ */
 class Solution {
     public int findMaxForm(String[] strs, int m, int n) {
         int[][] dp = new int[m+1][n+1];
