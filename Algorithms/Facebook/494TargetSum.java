@@ -1,40 +1,51 @@
 class Solution {
+    
     public int findTargetSumWays(int[] nums, int S) {
         int sum = 0;
         for (int num : nums){
             sum += num;
         }
-        if (S > sum || S < -sum){ return 0; }
         
-        int n = nums.length + 1;
-        int m = 2*sum+1;
-        int[][] dp = new int[n][m];
-        dp[0][sum] = 1;
-        for (int i = 1; i < n; i++){
-            for (int j = 0; j < m; j++){
-                if (j-nums[i-1] >= 0 ){ dp[i][j] += dp[i - 1][j - nums[i - 1]]; }
-                if (j+nums[i-1] < m){ dp[i][j] += dp[i - 1][j + nums[i - 1]];  }
+        if (sum < S || ((sum + S) & 1) == 1){
+            return 0;
+        }
+        
+        return findTarget(nums, ((sum + S) >>> 1));
+    }
+    
+    private int findTarget(int[] nums, int t){
+        int n = nums.length;
+        int[] dp = new int[t + 1];
+        dp[0] = 1;
+        for (int num : nums){
+            for (int j = t; j >= num; j--){
+                dp[j] += dp[j - num];
             }
         }
-        return dp[n-1][S+sum];
+        return dp[t];
     }
     
+    // recursive with memory
     public int findTargetSumWays2(int[] nums, int S) {
-        int[] count = new int[1];
-        search(nums, 0, S, count);
-        return count[0];
+        return backtrack(nums, 0, 0, S, new HashMap<>());
     }
     
-    private void search(int[] nums, int i, int S, int[] count){
-        if (i == nums.length && S == 0){
-            count[0]++;
-            return;
+    private int backtrack(int[] nums, int idx, int curSum, int S, Map<String, Integer> map){
+        if (idx == nums.length ){
+            if (curSum == S){
+                return 1;
+            }
+            return 0;
         }
-        if (i >= nums.length){
-            return;
+    
+        String str = idx+"->"+curSum;
+        if (map.containsKey(str)){
+            return map.get(str);
         }
         
-        search(nums, i+1, S+nums[i], count);
-        search(nums, i+1, S-nums[i], count);
+        int count = backtrack(nums, idx+1, curSum - nums[idx], S, map) 
+                    + backtrack(nums, idx+1, curSum + nums[idx], S, map);
+        map.put(str, count);
+        return count;
     }
 }
