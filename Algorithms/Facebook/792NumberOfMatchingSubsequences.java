@@ -1,4 +1,4 @@
-class Solution {
+d class Solution {
     public int numMatchingSubseq(String S, String[] words) {
         ArrayList<Node>[] schars = new ArrayList[26];
         int ans = 0;
