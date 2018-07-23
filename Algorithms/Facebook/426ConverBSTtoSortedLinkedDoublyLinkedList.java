@@ -1,29 +1,26 @@
 class Solution {
+    Node prev;  // before recursion, it will store prehead, after recursion, it will be the tail.
     public Node treeToDoublyList(Node root) {
         if (root == null){
             return root;
         }
-        Stack<Node> nodes = new Stack<>();
-        Node node = root;
-        Node head = null;
-        Node prev = null;
-        while (node != null || !nodes.isEmpty()){
-            while (node != null){
-                nodes.push(node);
-                node = node.left;
-            }
-            node = nodes.pop();
-            if (prev == null){
-                head = node;
-            }  else {
-                node.left = prev;
-                prev.right = node;
-            }
-            prev = node;
-            node = node.right;
-        }
-        head.left = prev;
-        prev.right = head;
-        return head;
+        Node dummy = new Node();
+        prev = dummy;
+        preOrder(root);
+        dummy.right.left = prev;
+        prev.right = dummy.right;
+        return dummy.right;
     }
+    
+    private void preOrder(Node root){
+        if (root == null){
+            return;
+        }
+        preOrder(root.left);
+        root.left = prev;
+        prev.right = root;
+        prev = root;
+        preOrder(root.right);
+    }
+
 }
