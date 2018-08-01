@@ -11,23 +11,34 @@ public class FBIteratorBSTPreOrderNextRemove {
 		node2.left = node1;
 		node2.right = node3;
 		BSTIterator(root);
-		System.out.println("hasNext? "+hasNext());
-		System.out.println("Next? "+ next());
-		System.out.println("remove? ");
+		next();
+		next();
+		next();
+		next();
+		next();
 		remove();
-		System.out.println("hasNext? "+hasNext());
-		//System.out.println("Next? "+ next());
 	}
 	
-	 static Queue<TreeNode> nodes;
+    static Queue<TreeNode> nodes;
+    static Queue<TreeNode> roots;
 	 static TreeNode preVisited = null;
+	 static TreeNode preVisitedRoot = null;
 	    public static void BSTIterator(TreeNode root) {
-	        nodes = new LinkedList<>();
+           nodes = new LinkedList<>();
+           roots = new LinkedList<>();
+           roots.offer(new TreeNode(-1));
 	        storeNodesInQueue(root);
 	        while (!nodes.isEmpty()){
 	            System.out.print(nodes.poll().val+"->");
 	        }
+           System.out.println("done");
+           while (!roots.isEmpty()){
+               TreeNode cur = roots.poll();
+               if (cur == null){System.out.print("null->"); continue; }
+	            System.out.print(cur.val+"->");
+	        }
 	        System.out.println("done");
+	        roots.offer(new TreeNode(-1));
 	        storeNodesInQueue(root);
 	    }
 	    
@@ -36,35 +47,51 @@ public class FBIteratorBSTPreOrderNextRemove {
 	    }
 	    
 	    public static int next() {
-	    	    if (nodes.isEmpty()) {
-	    	    		return -1;
-	    	    }
-	    		preVisited = nodes.poll();
-	    		return preVisited.val;
+            if (nodes.isEmpty()) {
+                    return -1;
+            }
+            preVisited = nodes.poll();
+            preVisitedRoot = roots.poll();
+            return preVisited.val;
 	        
 	    }
 	    
 	    public static void remove() {
-	    		if (nodes.isEmpty()) {return; }
-	    		System.out.print(" removed "+preVisited.val);
-	    		removeSubTree(preVisited);
-	    		System.out.println(" removed done");
+            removeSubTree(preVisited);
+            
+            if (preVisitedRoot == null) {
+                System.out.println("root is null");
+                return;
+            } 
+            if (preVisitedRoot.left == preVisited) {
+                preVisitedRoot.left = null;
+            } else {
+                preVisitedRoot.right = null;
+            }
 	    }
 	    
 	    public static void removeSubTree(TreeNode node){
-	    		if (node != preVisited) {
-	    			node = nodes.poll();
-	    			System.out.print(" removed "+node.val+",");
-	    		}
-	    		if (node.left != null) { removeSubTree(node.left); }
-	    		if (node.right != null) {  removeSubTree(node.right); }
+            if(nodes.isEmpty()) {
+                return;
+            }
+            if (node != preVisited) {
+                node = nodes.poll();
+            }
+            if (node.left != null) { removeSubTree(node.left); }
+            if (node.right != null) {  removeSubTree(node.right); }
 	    }
 	    
 	    private static void storeNodesInQueue(TreeNode root){
-	        if (root == null){ return; }
-	        nodes.offer(root);
-	        storeNodesInQueue(root.left);
-	        storeNodesInQueue(root.right);
+	    	 	if (root == null){ return; }
+	            nodes.offer(root);
+	            if (root.left != null){
+	                roots.offer(root);
+	                storeNodesInQueue(root.left);
+	            }
+		        if (root.right != null){
+	                roots.offer(root);
+	                storeNodesInQueue(root.right);
+	            }
 	    }
 	    
 	    public static class TreeNode {
@@ -72,6 +99,5 @@ public class FBIteratorBSTPreOrderNextRemove {
 	    	      TreeNode left;
 	    	      TreeNode right;
 	    	      TreeNode(int x) { val = x; }
-	    	 }
-
+             }
 }
