@@ -10,10 +10,12 @@ You should return 5。
 */
 
 class Solution{
+    int count;
     public int combinationLessThanTarget(int[] nums, int target){
-
-        
+        int count = 0;
+        return count;
     }
 
+    
 
 }
