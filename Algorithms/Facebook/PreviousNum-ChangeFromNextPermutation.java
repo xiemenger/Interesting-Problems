@@ -1,4 +1,5 @@
-	private static void previousNum(int[] nums) {
+class solution{
+    private void previousNum(int[] nums) {
 		if (nums == null || nums.length == 0) {
 			return;
 		}
@@ -16,4 +17,5 @@
 		}
 		reverse(nums, fIidx + 1, n - 1);
 		printNum(nums);
-	} 
+    } 
+}
