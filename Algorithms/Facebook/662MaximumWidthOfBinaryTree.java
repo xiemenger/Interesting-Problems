@@ -21,6 +21,10 @@ class Solution {
         if (level == starts.size()){
             starts.add(idx);
             ends.add(idx);
+
+
+
+            
         } else {
             ends.set(level, idx);
         }
