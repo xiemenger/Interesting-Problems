@@ -32,6 +32,8 @@ i 0       2   2   2   2   2
   
  3)当nums[i] + nums[k] > 2 * nums[j];
   说明nums[i] 太大, i--;
+
+时间复杂度 O(n^ 2),  空间O(n ^ 2)
  * 
  */
 class Solution{
