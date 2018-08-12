@@ -27,4 +27,19 @@ class Solution {
         }
         return canMatch[slen][plen];
     }
+
+    public boolean isMatchRecursive(String s, String p) {
+        if (p.isEmpty()){
+            return s.isEmpty();
+        }
+
+        boolean firstCharMatch = s.isEmpty() && 
+                                (s.charAt(0) == p.charAt(0) || p.charAt(0) == '.');
+        if (p.length() >= 2 && p.charAt(1) == '*'){
+            return isMatchRecursive(s, p.substring(2)) ||
+                    (firstCharMatch && isMatchRecursive(s.substring(1), p));
+                   
+        } 
+        return isMatchRecursive(s.substring(1), p.substring(1));
+    }
 }
