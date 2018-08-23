@@ -3,8 +3,6 @@ class Solution {
         if (matrix == null || matrix.length == 0){
             return;
         }
-        int m = matrix.length;
-        int n = matrix[0].length;
         tringleSwap(matrix);
         leftRightSwap(matrix);
     }
