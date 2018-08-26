@@ -1,0 +1,13 @@
+Process 
+is an executing instance of application.
+
+Thread:
+is a path of execution within a process.
+
+Typical difference:
+1) A process can contain multiple threads. 
+2) Threads of the same process run in a shared memory space.
+   while process run in separate memory spaces.
+
+IPC: Inter-prcess communication
+ITC:

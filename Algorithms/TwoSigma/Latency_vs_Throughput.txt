@@ -1,0 +1,8 @@
+Latency: Elasped Time for an event.
+         比如我从office走到办公室需要30分钟, 那么30分钟就是这个
+         event的latency.
+
+Throughput:
+       Events per unit time. 
+       比如一段时间内有多少人走进教室.
+       Bandwidth: ThroughPut measure.
