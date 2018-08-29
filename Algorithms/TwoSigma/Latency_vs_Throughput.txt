@@ -6,3 +6,11 @@ Throughput:
        Events per unit time. 
        比如一段时间内有多少人走进教室.
        Bandwidth: ThroughPut measure.
+
+Throughput impacted by latency?
+throughput = bandwith / rtt
+rtt = latency * 2
+
+latency up, throughput down
+latency down, throughput up
+

@@ -9,5 +9,18 @@ Typical difference:
 2) Threads of the same process run in a shared memory space.
    while process run in separate memory spaces.
 
-IPC: Inter-prcess communication
-ITC:
+太多的thread会有什么不好?
+hurts performance.
+ 1) 如果每个thread的work太少, 那么starting and terminating
+    thread swamps the useful work.
+  2) 如果thread share finite hardware resource. 
+
+Typical difference is, 
+: 1) processes run in separated memory while threads run in shared memory.
+processes are typically independent, while threads exist as subsets of a process
+2) processes carry considerably more state information than threads, whereas multiple threads 
+within a process share process state as well as memory and other resources
+3) processes have separate address spaces, whereas threads share their address space
+processes interact only through system-provided inter-process communication mechanisms
+4) ontext switching between threads in the same process is typically faster than context 
+switching between processes.

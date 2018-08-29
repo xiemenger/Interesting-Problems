@@ -1,0 +1,23 @@
+Quicksort vs Merge sort
+Quick sort
+- in place
+- average O(nlgn), worst O(n^2)
+
+Merge sort
+- average and worst O(nlgn)
+- extra space O(n)
+
+External sorting is a term for a class of sorting algorithms that 
+can handle massive amounts of data. External sorting is required when the data 
+being sorted do not fit into the main memory of a computing device (usually RAM) 
+and instead they must reside in the slower external memory (usually a hard drive). 
+External sorting typically uses a hybrid sort-merge strategy. In the sorting phase, 
+chunks of data small enough to fit in main memory are read, sorted, and written out 
+to a temporary file. In the merge phase, the sorted subfiles are combined into a single 
+larger file.
+
+The core idea, is that in the sorting phrase, the chunk of data that we need to sort 
+could be loaded to RAM and thus apply sorting to them. Then we can write them back to 
+the temporary file.
+
+Both merge sort and quick sort could be used for external sorting.
