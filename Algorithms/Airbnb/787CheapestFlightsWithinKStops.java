@@ -1,3 +1,9 @@
+/**
+ * Time: O(nlogn).
+ * Space: O(n)
+ * 类似BFS+PriorityQueue
+ */
+
 class Solution {
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int K) {
         Map<Integer, Map<Integer, Integer>> neibs = new HashMap<>();  //station -> (next -> price);
@@ -20,7 +26,7 @@ class Solution {
                 return curCost;
             }
             
-            if (curStop > 0 && neibs.containsKey(curPos)){
+            if (curStop > 0 && neibs.containsKey(curPos)){j
                 Map<Integer, Integer> neib = neibs.get(curPos);
                 for (int next : neib.keySet()){
                     costs.offer(new int[]{curCost+neib.get(next), next, curStop - 1});
