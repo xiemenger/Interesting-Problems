@@ -1,10 +1,15 @@
 /**
+ * 给一个全是数字的string 假设是循坏的，
+ * 求满足连续出现数字的和。比如“1122”-》3 1和2 是连续出现，
+ * “1234”-》0 没有连续的，
+ * “31212123”=》 3  只有3 连续出现。
+ * 
  * Time: O(n)
  * Space: O(n)
  */
 
 class solution{
-    public int[] findDuplicates(int[] nums){
+    public int findDuplicates(int[] nums){
         if (nums == null || nums.length == 0){
             return new int[0];
         }
@@ -22,12 +27,11 @@ class solution{
             } 
         }
 
-        int[] res = new int[duplicates.size()];
-        int i = 0;
+        int sum = 0;
         for (int num : duplicates){
-            res[i++] = num;
+            sum += num;
         }
-        return num;
+        return sum;
     }
 
 }
