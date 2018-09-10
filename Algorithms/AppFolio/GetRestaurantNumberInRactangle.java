@@ -7,10 +7,11 @@ get_restaurants(sw_x, sw_y, ne_x, ne_y).
 实现get_all_restaurants(sw_x, sw_y, ne_x, ne_y)，返回在这个长方形区域内的所有饭店.
 follow up:
 1. get_all这个函数会被call很多次，如果中间crash了，需要存哪些信息来恢复
+    create log, read log.
 2. 如何speed up
+   multi-thread for each get_all_restaurants.
 
- 
- */
+*/
 
 class Solution{
     public int get_all_restaurants(int sw_x, int sw_y, int ne_x, int ne_y){
