@@ -5,5 +5,23 @@
  */
 
  class Solution{
-     
+    public int findMind(int[] nums, int val) {
+		int idx = findPosition(nums, val);
+		return idx + (nums.length - 1 - idx) / 2;
+	}
+	
+	private int findPosition(int[] nums, int val) {
+		int l = 0;
+		int r = nums.length;
+		while (l < r) {
+			int m = l + (r - l) / 2;
+			if (nums[m] <= val) {
+				l = m + 1;
+			} else {
+				r = m;
+			}
+		}
+		System.out.println("the position is : "+l);
+		return l;
+	}
  }
