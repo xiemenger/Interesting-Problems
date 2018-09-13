@@ -1,7 +1,36 @@
 import java.util.List;
 
 public class NoPairsAllowed {
-    private static int[] minimalOperations(String[] input) {
+    
+    private static int[] minimalOperations(String[] strs) {
+		int[] res = new int[strs.length];
+		for (int i = 0; i < strs.length; i++) {
+			res[i] = compute(strs[i]);
+		}
+		return res;
+	}
+	
+	private static int compute(String s) {
+		if (s.isEmpty()) {
+			return 0;
+		}
+		int operation = 0;
+		int cnt = 1;
+		for (int i = 1; i < s.length(); i++) {
+			if (s.charAt(i) == s.charAt(i - 1)) {
+				cnt++;
+			} else {
+				operation += cnt / 2;
+				cnt = 1;
+			}
+		}
+		operation += cnt / 2;
+		return operation;
+	}
+
+    // -------------------------------------------------------
+    // Old
+    private static int[] minimalOperations2(String[] input) {
         int[] res = new int[input.length];
         for (int i = 0; i < input.length; i++) {
             int op = 0;
