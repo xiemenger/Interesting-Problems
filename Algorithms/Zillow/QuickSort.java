@@ -2,6 +2,7 @@
  * Time O(nlogn)
  * Space: height of the tree. O(logn)
  * 
+ * 
  */
 
 class solution{
@@ -13,7 +14,7 @@ class solution{
         if (start >= end){
             return;
         }
-        int pivot = nums[(start + end) / 2];
+        int pivot = nums[end];
         int idx = partition(nums, start, end, pivot);
         quickSort(nums, start, idx - 1);
         quickSort(nums, idx, end);
