@@ -2,39 +2,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MissingWords {
-    private static List<String> missingWords(String a, String b) {
+    private static List<String> missingWords(String s, String t) {
         // store the two lists
-        String[] alist = a.split(" ");
-        String[] blist = b.split(" ");
+        String[] sWords = t.split(" ");
+        String[] tWords = t.split(" ");
         List<String> res = new ArrayList<>();
 
-        int apos = 0;
-        int bpos = 0;
+        int spos = 0;
+        int tpos = 0;
 
-        while (bpos < blist.length) {
-            String btemp = blist[bpos];
-            while (apos < alist.length) {
-                String atemp = alist[apos];
-                if (atemp.equals(btemp)) {
+        while (tpos < tWords.length) {
+            String tWord = tWords[tpos];
+            while (spos < sWords.length) {
+                String sWord = sWords[spos];
+                if (sWord.equals(tWord)) {
                     // if the two are the same, both add 1
-                    apos++;
-                    bpos++;
+                    spos++;
+                    tpos++;
                     break;
                 } else {
                     res.add(atemp);
-                    apos++;
+                    spos++;
                 }
             }
         }
 
         // to check if there is still missing
-        while (apos < alist.length) {
-            res.add(alist[apos]);
-            apos++;
+        while (spos < sWords.length) {
+            res.add(sWords[spos]);
+            spos++;
         }
-
         return res;
-
     }
 
     public static void main(String[] args) {
