@@ -1,117 +1,76 @@
 public class PrimesInSubtree {
-    private static int[] primeQuery(int number, int[] starts, int[] ends, int[] values, int[] queries) {
-		int[] cntPrime = new int[number];
-		int[] parents = new int[number];
-		for(int i = 0; i < values.length; i++) {
-			cntPrime[i] = isPrime(values[i]) ? 1 : 0;
-		}
-		
-		for (int i = 0; i < parents.length; i++) {
-			parents[i] = i;
-		}
-		
-		for(int i = 0; i < starts.length; i++) {
-			parents[ends[i] - 1] = starts[i] - 1;
-		}
-		
-		for (int i = 0; i < cntPrime.length; i++) {
-			int node = i;
-			while (node != parents[node]) {
-				node = parents[node];
-				cntPrime[node] += cntPrime[i];
-			}
-		}
-		
-		int[] res = new int[queries.length];
-		for (int i = 0; i < queries.length; i++) {
-			res[i] = cntPrime[queries[i] - 1];
-		}
-		return res;
-	}
-	
-    private static boolean isPrime(int n) {
-        // from restritions, all the values >= 1
-        if (n <= 3) return true;
-
-        // if it is a even number
-        if (n % 2 == 0) return false;
-
-        // loop from 3
-        for (int i = 2; i * i <= n; i++) {
-            if (n % i == 0) return false;
+    static List<Integer> primeQuery(int n, List<Integer> first, List<Integer> second, List<Integer> values, List<Integer> queries) {
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < first.size(); i++){
+            if (!graph.containsKey(first.get(i))){
+                graph.put(first.get(i), new HashSet<>());
+            }
+            graph.get(first.get(i)).add(second.get(i));
+            if (!graph.containsKey(second.get(i))){
+                graph.put(second.get(i), new HashSet<>());
+            }
+            graph.get(second.get(i)).add(first.get(i));
         }
+        
+        dfsSearch(graph, -1, 1);
+        int[] cnts = new int[n + 1];
+        Arrays.fill(cnts, -1);
+        List<Integer> res = new ArrayList<>();
+        for(int q : queries){
+            if (cnts[q] == -1){
+                res.add(dfsUpdateCnt(graph, q, cnts, values));
+            } else {
+                res.add(cnts[q]);
+            }
+        }
+        return res;
+    }
+    
+    static int dfsUpdateCnt(Map<Integer, Set<Integer>> graph, int cur, int[] cnts, List<Integer> values){
+        if (cnts[cur] == -1){
+            cnts[cur] = 0;
+            for (int next : graph.get(cur)){
+                cnts[cur] += dfsUpdateCnt(graph, next, cnts, values);
+            } 
+            if (isPrime(values.get(cur - 1))){
+                cnts[cur] += 1;
+            }
+        }
+        return cnts[cur];
+    }
 
+    static void dfsSearch(Map<Integer, Set<Integer>> graph, int parent, int cur){
+        for (int next : graph.get(cur)){
+            if (parent != next){
+                dfsSearch(graph, cur, next);
+            }
+        }
+        graph.get(cur).remove(parent);
+    }
+
+    static boolean isPrime(int val){
+        if(val == 1){return false; }
+        if(val <= 3){return true; }
+        if (val % 2 == 0){return false; }
+        for (int i = 2; i * i <= val; i++){
+            if (val % i == 0){
+                return false;
+            }
+        }
         return true;
     }
 
+    static void printList(List<Integer> list){
+        for (int num : list){
+            System.out.print(num+", ");
+        }
+        System.out.println("");
+    }
 
-    // private static int[] primeQuery(int number, int[] starts, int[] ends, int[] values, int[] queries) {
-    //     int[] countDict = new int[number];
-    //     int[] indexDict = new int[number];
-
-    //     // initialize the count of primes
-    //     for (int i = 0; i < values.length; i++) {
-    //         countDict[i] = isPrime(values[i]) ? 1 : 0;
-    //     }
-
-    //     // initialize the index list
-    //     for (int i = 0; i < indexDict.length; i++) {
-    //         indexDict[i] = i;
-    //     }
-    //     for (int i = 0; i < starts.length; i++) {
-    //         int idx = ends[i] - 1;
-    //         int ptr = starts[i] - 1;
-    //         indexDict[idx] = ptr;
-    //     }
-
-    //     // fill in the number of primes
-    //     for (int i = 0; i < countDict.length; i++) {
-    //         // loop and add
-    //         int temp = i;
-    //         while (indexDict[temp] != temp) {
-    //             temp = indexDict[temp];
-    //             countDict[temp] += countDict[i];
-    //         }
-    //     }
-
-    //     // do the queries
-    //     int[] res = new int[queries.length];
-    //     for (int i = 0; i < queries.length; i++) {
-    //         res[i] = countDict[queries[i] - 1];
-    //     }
-    //     return res;
-
-    // }
-
-    // private static boolean isPrime(int n) {
-    //     // from restritions, all the values >= 1
-    //     if (n <= 3) return true;
-
-    //     // if it is a even number
-    //     if (n % 2 == 0) return false;
-
-    //     // loop from 3
-    //     for (int i = 2; i * i <= n; i++) {
-    //         if (n % i == 0) return false;
-    //     }
-
-    //     return true;
-    // }
-
-    // private static void printList(int[] list) {
-    //     for (int i : list) {
-    //         System.out.print(i + " ");
-    //     }
-    // }
-
-    // public static void main(String[] args) {
-    //     // testcase 1
-    //     int n = 6;
-    //     int[] startNodes = {1, 2, 2, 1, 3}; // 5 edges
-    //     int[] endNodes = {2, 4, 5, 3, 6}; // size: 5
-    //     int[] values = {2, 2, 6, 5, 4, 3}; // size: 6
-    //     int[] queries = {1, 4, 5, 6, 2}; // size: 5
-    //     printList(primeQuery(n, startNodes, endNodes, values, queries));
-    //     // 4 1 0 1 2
-    // }
+    static void printArray(int[] list){
+        for (int num : list){
+            System.out.print(num+", ");
+        }
+        System.out.println("");
+    }
 }
