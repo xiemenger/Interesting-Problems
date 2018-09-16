@@ -1,0 +1,391 @@
+15.1  What's the difference between a thread and a process?
+    Answer: 
+    A process can be thought of as an instance of a program in execution. 
+    A process is an independent entity to which system resources are allocated.
+    Each process is executed in a seperated address space. 
+    A process cannot access the vairables and data structures of another process.
+    If a process wishes to access another process' recources, inter-process communications 
+    have to be used. There include pipes, files, sockets, and other forms.
+
+    A thread exists with a process and shares' the process' resources.(including heap space).
+    Multiple threads within the same process will share the same heap space.
+    Each thread still has its own registers and its own stack, 
+    but other threadcan read and write the heap memoy.
+
+    When one thread modifies a process resource, the change is immediately 
+    visible to sibling threads.
+
+15.2 How would you measure the time spent in a context switch?
+     A context switch is the time spent switching between two processes.
+     This happends in multitasking.
+     The operating system must bring the state information of waiting processes information
+     into memory and save state information of the currently running process.
+
+     In order to solve this problems, we would like to record the timestamps last the first 
+     instruction of the swapping processes. The context switch time is the difference in the 
+     timestamps between the two processes.
+
+     Let's take an easy example: Assume there are only two processes, P1 and P2•
+     12. P1 is executing and P2 is waiting for execution. At some point, the operating system
+     must swap p1 and p2.  let's assume it happens at the Nth instruction of P1. 
+     If tx,k indicates the timestamp in microseconds of the kth instruction of process x, 
+     then the context switch would take t(2,1) - t(1,n )microseconds.
+     .....
+
+15.3 Dining Philosophers: In the famous dining philosophers problem, a bunch of philosophers 
+     are sitting around a circular table with one chopstick between each of them. A philosopher
+      needs both chopsticks to eat, and always picks up the left chopstick before the right one. 
+      A deadlock could potentially occur if all the philosophers reached  r the left chopstick 
+      at the same time. Using threads and locks, implement a simulation of the dining philosophers
+       problem that prevents deadlocks.
+    Answer: First, let's implement a simple simulation of the dining philosophers problem in which we don't 
+    concern ourselves with deadlocks. We can implement this solution by having Philosopher extend 
+    Thread, and Chopstick call lock. lock() when it is picked up and lock. unlock() when it is put down.
+    class Chopstick{
+        private Lock lock;
+
+        public Chopstick(){
+            lock = new ReentrantLock();
+        }
+
+        public void pickup(){
+            lock.lock();
+        }
+
+        public void putDown(){
+            lock.unlock();
+        }
+    }
+
+    class Philosepher extends Thread{
+        private int bites = 10;
+        private Chopstick left, right;
+
+        public Philosepher(Chopstick left, Chopstick right){
+            this.left = left;
+            this.right = right;
+        }
+
+        public void eat(){
+            pickUp();
+            chew();
+            putDown();
+        }
+
+        public void pickUp(){
+            left.pickup();
+            right.pickup();
+        }
+
+        public void chew(){}
+
+        public void putDown(){
+            right.putDown();
+            left.putDown();
+        }
+
+        public void run(){
+            for (int i = 0; i < bites; i++){
+                eat();
+            }
+        }
+    }
+
+    Running the above code my lead to a deadlock if all the philosophers have a left chopstick and are waiting for 
+    the right one.
+
+    Solution 1: All or Nothing.
+    To prevent deadlocks, we can implement a strategy where a philosopher will put down his left chopstick when he
+    is unable to obtain the right one. Change lock.lock to lock.tryLock()
+    class Chopstick{
+        .
+        .
+        .
+        public boolean pickup(){
+            return lock.tryLock();
+        }
+        .
+        .
+        .
+    }
+
+    class Philosepher extends Thread{
+        .
+        .
+        .
+        public void eat(){
+            if (pickUp()){
+                chew();
+                putDown();
+            }
+        }
+
+        public boolean pickUp(){
+            if (!left.pickUp()){
+                return false;
+            }
+            if (!right.pickup()){
+                left.putDown();
+                return false;
+            }
+            return true;
+        }
+
+        public void chew(){}
+
+        public void putDown(){
+            right.putDown();
+            left.putDown();
+        }
+
+        public void run(){
+            for (int i = 0; i < bites; i++){
+                eat();
+            }
+        }
+    }
+    In the above code, we need to be sure to release the le  chopstick if we can't pick up the right one-and 
+    to not call putDown () on the chopsticks if we never had them in the  rst place.
+    One issue with this is that if all the philosophers were perfectly synchronized, they could simultaneously
+    pick up their left chopstick, be unable to pick up the right one, and then put back down the left one-only
+    to have the process repeated again.
+
+
+    Solution2 :  Prioritized Chopsticks.
+    Alternatively, we can label the chopsticks with a number from 0 to N - 1. Each philosopher attempts to pick 
+    up the lower numbered chopstick  rst. This essentially means that each philosopher goes for the le  chopstick
+     before right one (assuming that's the way you labeled it), except for the last philosopher who does this in 
+     reverse. This will break the cycle.
+
+     public class Philosopher extends Thread {
+        private int bites = 10;
+        private Chopstick lower, higher;
+        private int index;
+
+        public Philosopher(int i, Chopstick left, Chopstick right) {
+            index = i;
+            if (left.getNumber() < right.getNumber()) {
+                this.lower = left;
+                this.higher = right;
+            } else {
+                this.lower = right;
+                this.higher = left;
+            }
+        }
+
+        public void eat() {
+            pickup();
+            chew();
+            putDown();
+        }
+
+        public void pickUp() {
+            lower.pickup();
+            higher.pickup();
+        }
+
+        public void chew() { ... }
+
+        public void putDown() {
+            higher.putDown();
+            lower.putDown();
+        }
+
+        public void run() {
+            for (int i= 0; i < bites; i++) {
+                eat();
+            }
+        }
+     }
+
+     public class Chopstick {
+         private Lock lock;
+         private int number;
+
+         public Chopstick(int n){
+             lock = new ReentrantLock();
+             this.number = n;
+         }
+
+         public void pickup(){
+             lock.lock();
+         }
+
+         public void putDown(){
+             lock.unlock();
+         }
+         public int getNumber(){
+             return number;
+         }
+     }
+
+     With this solution, a philosopher can never hold the larger chopstick without holding 
+     the smaller one.This prevents the ability to have a cycle, since a cycle means that a higher 
+     chopstick would"point"to a lower one.
+
+        
+
+15.4 Deadlock-Free Class: Design a class which provides a lock only if there are no possible deadlocks.
+Solution:
+    There are several common ways to prevent deadlocks. One of the popular ways is to require a process to 
+    declare upfront what locks it will need. We can then verify if a deadlock would be created by issuing 
+    these locks, and we can fail if so.
+    With these constraints in mind, let's investigate how we can detect deadlocks. Suppose this was the order
+     of locks requested:
+        A= {1, 2, 3, 4} 
+        B = {1, 3, 5} 
+        C= {7, 5, 9, 2}
+    This may create a deadlock because we could have the following scenario:
+    Alocks 2, waits on 3 Blocks 3, waits on 5 C locks 5, waits on 2
+    We can think about this as a graph, where 2 is connected to 3, 3 is connected to 5, and 5 is connected 
+    to 2. A deadlock is represented by a cycle. An edge (w, v) exists in the graph if a process declares that 
+    it will request lock v immediately a er lock w. For the earlier example, the following edges would exist 
+    in the graph: (1, 2), (2, 3), (3, 4), (1, 3), (3, 5), (7, 5), (5, 9), (9, 2).The"owner" of the edge does 
+    not matter.
+
+    This class will need a declare method, which threads and processes will use to declare what order they 
+    will request resources in. This declare method will iterate through the declare order, adding each 
+    contig­ uous pair of elements (v, w) to the graph. A erwards, it will check to see if any cycles have 
+    been created. If any cycles have been created, it will backtrack, removing these edges from the graph,
+     and then exit.
+
+
+    15.5 Call In Order: Suppose we have the following code:
+        public class Foo {
+            public Foo() { ... }
+            public void first() { ... } 
+            public void second() { ... } 
+            public void third() { ... }
+        }
+        The same instance of Foo will be passed to three different threads. ThreadA will call first 
+        threadB will call second, 
+        and thread( will call third. Design a mechanism to ensure that first is called be re second 
+        and second is called before third.
+
+        The general logic is to check if first() has completed before executing second(), and if 
+        second() has completed be re calling third(). Because we need to be very careful about 
+        thread safety, simple boolean flags won't do the job. about using a lock to do something 
+        like the below code?
+        public class FooBad{
+            public int pauseTime = 1000;
+            public ReentrantLock lock1, lock2;
+
+            public FooBad(){
+                try {
+                    lock1 = new ReentrantLock();
+                    lock2 = new ReentrantLock();
+
+                    lock1.lock();
+                    lock2.lock();
+                } catch (...) { ...}
+            }
+
+            public void first(){
+                try{
+                    ....
+                    lock1.unlock();
+                }
+            }
+
+            public void second(){
+                try{
+                    lock1.lock();  // must get the lock1.
+                    lock1.unlock();
+                    ....
+                    lock2.unlock(); // release lock2.
+                } catch(...){ ... }
+            }
+
+            public void third(){
+                try{
+                    lock2.lock(); // must get the lock2
+                    lock2.unlock();
+                    ...
+                } catch (...){ ... }
+            }
+        }
+
+    Actually the code won't quite work due to the concept of the Lock ownership. One thread
+    is actually performance the lock, the different threads attempts to unlock the lock. This
+    is not allowed. The code will raise an exception. A lock is owned by the thread which
+    locked it.
+
+    Instead, we can relicate this behaivor with semophores:
+        public calss Foo{
+            public Semaphores sem1, sem2;
+
+            public Foo(){
+                try {
+                    sem1 = new Semaphores(1);
+                    sem2 = new Semaphores(2);
+
+                    sem1.acquire();
+                    sem2.acquire();
+                } catch (...){ ... }
+            }
+
+            public void first(){
+                try {
+                    ...
+                    sem1.release();
+                } catch catch (...){ ... }
+            }
+
+            public void second(){
+                try{
+                    sem1.acquire()
+                    sem1.release();
+                    ...
+                    sem2.release();
+                } catch catch (...){ ... }
+            }
+
+            public void thrid(){
+                try{
+                    sem2.acquire();
+                    sem2.release();
+                    ....
+                } catch catch (...){ ... }
+            }
+        }
+
+
+15.6 Synchronized Methods: 
+     You are given a class with synchronized method A, and a normal method B.
+     If you have two threads in one instance of a program, can they both execute 
+     A at the same time? Can they execute A and B at the same time?
+
+    Solution: for the same instance, two threads cannot simultaneously execute 
+    method A. But if they have different instance, then they can.
+
+    For B. yes, they can since B method is not synchronized.
+
+
+15.7 FizzBuzz: In the classic problem FizzBuzz, you are told to print the numbers 
+    from 1 to n. However, when the number is divisible by 3, print "Fizz'  When 
+    it is divisible by 5, print "Buzz'  When it is divisible by 3 and 5, print"FizzBuzz'
+    In this problem, you are asked to do this in a multithreaded way. Implement a 
+    multithreaded version of FizzBuzz with four threads. One thread checks for divisibility 
+    of 3 and prints"Fizz'  Another thread is responsible  r divisibility of 5 and prints"Buzz' 
+    A third thread is responsible  r divisibility of 3 and 5 and prints"FizzBuzz'  A fourth 
+    thread does the numbers.
+
+
+
+    public class FizzBuzzThread extends thread(){
+        private static Object lock = new Object();
+        protected static int current = 1;
+
+    
+    }
+
+
+
+
+    
+
+
+
+
+
+
