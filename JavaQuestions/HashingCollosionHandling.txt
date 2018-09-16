@@ -11,3 +11,97 @@ Each table entry contains either a record or NIL. When searching for an element,
 table slots until the desired element is found or it is clear that the element is not in the table.
 
 Refer to: https://www.geeksforgeeks.org/hashing-set-1-introduction/
+
+1. What's Hashtable:
+   A hash table is a data structure that map keys to values.
+   A hash table uses a hash function to compute an index into an array of 
+   buckets which where desired value can be found.
+
+2. Hashing Function shoud be:
+  1) efficiently compute.
+  2) Should uniformly ditributed the key.
+
+3. Collision:
+   When hash function produce the same index for different keys.
+
+4. What's time complexity:
+   O(1) on average for operation insert, search, delete
+
+5. Worse time complexity:
+  O(n)   
+
+6. Why is the hash table slow?
+
+7: Collision Handling:
+  1) Chaining - The idea is to make each cell of hash table point to a 
+                linkedlist of records that have same hash function value.
+  2) Open Addressing - All elements are sorted in the hash table itselft.
+
+8. Chaining
+   优点:
+   1) simple to implement.
+   2) Hash table will never fills up. we can always add more elements to chain
+   3) Less sensetive to hash function or load factors. 
+   4) 最常用于不知道有多少的key, 不知道key会多频繁的Insert or delete
+
+   缺点:
+   1) Caching performance of chaining is not good as keys are stored using linked list.
+   2) Wastage of Space. 哪些没有放Key的浪费了.
+   3) if linkedlist is long. the search time can become O(n) in the worst case.
+
+   Complexity:
+    n = number of keys stored in the table.
+    m = number of slots in table.
+    @ = Average keys per slot or load factor = n / m
+
+9. What is Open Addressing?  
+    Chaining 是在每个slot后面放linked list.
+             h(k), 用o(1)时间去找position, 
+
+    Open addressing is a method of resolving collision in hash table
+    hash function h(k, i)
+    three ways:
+    1) Linear Probing,
+    2) Quadratic Probing,
+    3) Double Hashing,
+
+    1) Linear Probing:
+       h(X) = (HASH(X) + i) % HASHTABLESIZE
+       if h0 = (HASH(X) + 0) % HASHTABLESIZE 已经用了, 则i + 1.
+       尝试h1 = (HASH(X) + 1) % HASHTABLESIZE 一直这样下去直到找到空闲的slot.
+
+       每个slot有三种状态: empty, occupied, deleted.
+       Insert: 如果hashed index是empty or deleted, 直接放进去.
+               如果是occupied. try next hashed index.
+       Search: get hashed index. compare the value. if value different. 
+               try next hashed index.
+       Delete: After deleted, the slot is marked with deleted. 
+               为了在search的遇到delelted 状态时会继续往下找.
+    2) Quadratic Probing,
+        h(X) = (HASH(X) + i^2) % HASHTABLESIZE
+        if h0 = (HASH(X) + 0) % HASHTABLESIZE 已经用了, 则i + 1.
+        if h1 = (HASH(X) + 1) % HASHTABLESIZE 已经用了, 则i + 1.
+        if h2 = (HASH(X) + 4) % HASHTABLESIZE 已经用了, 则i + 1.
+        ...
+    
+    3) Double Hashing, 
+       two hashing functions:
+       h(X) = (HASH1(X) + i * HASH2(X)) % HASHTABLESIZE
+  
+    比较:
+    Linear Probing:
+       好处:
+       Easy to implement.
+       Best Cache Performance
+       Suffers from clustering.
+
+    Quadratic Probing
+       好处: 
+       Average Cche Performance.
+       Suffers a lesser clustering than linear probing.
+
+    Double Hashing
+       Poor Cache Performance.
+       No clustering.
+       Requrires more computation time.
+    
