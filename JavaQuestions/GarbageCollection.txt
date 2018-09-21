@@ -1,2 +1,40 @@
 1.Java memory management:  https://www.dynatrace.com/resources/ebooks/javabook/how-garbage-collection-works/
+
+
+
+1. The difference between Thread and process.
+   
+
+
 2. 
+
+1. Java memory management.
+2. Garbage Collection.
+
+3. How does Hashing work?
+   How to deal with Hashing Collosion?
+4. Inheritance defination and usage
+5. Polymorphism defination and useage
+5. overriding & overloading
+6. Differences between final, finally, finalize
+7. Exception throwable.
+8. Differences between Abstract and Interface.
+9. Define Package and why package?
+10. Heap and operation time complexities
+11. The difference between Thread and process.
+12. Boxing, Unboxing.
+
+
+
+- 如何向小孩解释big(O）
+  https://www.quora.com/Whats-the-best-way-to-explain-big-O-notation-in-laymens-terms
+  
+- 口述实习多线程修改一堆文件
+- 然后问了我unittest的问题，平时怎么做test等等
+- 然后followup判断一个TreeNode是不是另外一个TreeNode的ancestor。
+- 项目是怎么scability的
+- 如何写test
+4. 如何定义good code 和 great code
+5. 最擅长的两个语言, 它们有什么区别
+6. 别人对你的code有什么评价, 你如何改进
+7. 如何给5岁小孩介绍recursion
