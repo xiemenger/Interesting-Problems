@@ -26,7 +26,19 @@ public class MinimumStepToSort {
 			}
 			l++; r--;
 		}
-		return steps;
+
+		int stepsright = 0;
+		l = 0; 
+		r = bin.length - 1;
+		while (l < r) {
+			while (l < r && bin[l] == 1) {l++; }
+			while (l < r && bin[r] == 0) {r--; }
+			if (l < r) {
+				stepsright += r - l;
+			}
+			l++; r--;
+		}
+		return Math.min(steps, stepsright);
 	}
 
 }
