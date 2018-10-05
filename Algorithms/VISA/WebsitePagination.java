@@ -25,7 +25,6 @@ public class WebsitePagination {
 			}
 		});
 		
-		
 		int start = y * x;
 		int end = start + x;
 		for (; start < end && start < items.length; start++) {

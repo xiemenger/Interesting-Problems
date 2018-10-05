@@ -40,5 +40,4 @@ public class MinimumStepToSort {
 		}
 		return Math.min(steps, stepsright);
 	}
-
 }
